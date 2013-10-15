@@ -11,6 +11,7 @@ Scriptname RND_Weight extends questVersioning Conditional
 MagicEffect[]       Property RNDHungerMagicEffects  Auto
 GlobalVariable      Property GameHour               Auto  
 ReferenceAlias      Property Alias_Player           Auto
+Message             Property SexLabRNDRestore       Auto  
 Int[]               Property RNDHungerEffects       Auto
 Int[]               Property iEatingHabit           Auto  Conditional
 
@@ -67,12 +68,47 @@ Bool triggerUpdate  = False
 Bool rndFound       = False
 
 int Function qvGetVersion()
-	return 1
+	return 2
 endFunction
 
 function qvUpdate( int aiCurrentVersion )
-
+	if (qvCurrentVersion >= 2 && aiCurrentVersion < 2)
+		SexLabRNDRestore = Game.GetFormFromFile(0x000093f8, "SexLab RND.esp") as Message
+	endIf
 endFunction
+
+function startQuest(Actor pActor)
+	ActorBase pActorBase = pActor.GetActorBase()
+
+	fOrigPlayerWeight    = pActorBase.GetWeight() as Float
+	fOrigPlayerMass      = pActor.GetActorValue("Mass")
+	fCurrentPlayerWeight = fOrigPlayerWeight
+	fCurrentPlayerMass   = fOrigPlayerMass
+
+	Int idx = 0
+	While idx < RNDHungerEffects.Length
+		MagicEffect nthMagicEffect = Game.GetFormFromFile( RNDHungerEffects[idx], "RealisticNeedsandDiseases.esp") as MagicEffect
+		Debug.Trace( "RNDWeight::GetFormFromFile = " + nthMagicEffect.GetName() + " :: " + nthMagicEffect)
+		RNDHungerMagicEffects[idx] = nthMagicEffect
+		idx += 1
+	EndWhile
+
+	RegisterForUpdateGameTime( 0.125 )
+	RegisterForUpdate( 5.0 )
+endFunction
+
+function endQuest(Actor pActor)
+	ActorBase pActorBase = pActor.GetActorBase()
+
+	if SexLabRNDRestore.Show(fCurrentPlayerWeight, fOrigPlayerWeight) == 1
+		pActorBase.SetWeight( fOrigPlayerWeight )
+		pActor.SetActorValue("Mass", fOrigPlayerMass)
+	endIf
+
+	UnregisterForUpdateGameTime()
+	UnregisterForUpdate()
+endFunction
+
 
 Function ModActorWeight(Actor akActor, ActorBase akActorBase, Int iModVal )
 	fCurrentPlayerWeight = akActorBase.GetWeight() + iModVal

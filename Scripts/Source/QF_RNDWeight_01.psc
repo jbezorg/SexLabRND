@@ -7,26 +7,6 @@ Scriptname QF_RNDWeight_01 Extends Quest Hidden
 ReferenceAlias Property Alias_PlayerRef Auto
 ;END ALIAS PROPERTY
 
-;BEGIN FRAGMENT Fragment_3
-Function Fragment_3()
-;BEGIN AUTOCAST TYPE RND_Weight
-Quest __temp = self as Quest
-RND_Weight kmyQuest = __temp as RND_Weight
-;END AUTOCAST
-;BEGIN CODE
-; END QUEST
-kmyQuest.UnregisterForUpdateGameTime()
-kmyQuest.UnregisterForUpdate()
-
-Actor pActor = Alias_PlayerRef.GetActorReference()
-ActorBase pActorBase = pActor.GetActorBase()
-
-pActorBase.SetWeight( kmyQuest.fOrigPlayerWeight )
-pActor.SetActorValue("Mass", kmyQuest.fOrigPlayerMass)
-;END CODE
-EndFunction
-;END FRAGMENT
-
 ;BEGIN FRAGMENT Fragment_5
 Function Fragment_5()
 ;BEGIN AUTOCAST TYPE RND_Weight
@@ -35,26 +15,20 @@ RND_Weight kmyQuest = __temp as RND_Weight
 ;END AUTOCAST
 ;BEGIN CODE
 ; START QUEST
+kmyQuest.startQuest( Alias_PlayerRef.GetActorReference() )
+;END CODE
+EndFunction
+;END FRAGMENT
 
-Actor pActor = Alias_PlayerRef.GetActorReference()
-ActorBase pActorBase = pActor.GetActorBase()
-
-kmyQuest.fOrigPlayerWeight = pActorBase.GetWeight() as Float
-kmyQuest.fOrigPlayerMass = pActor.GetActorValue("Mass")
-
-kmyQuest.fCurrentPlayerWeight = kmyQuest.fOrigPlayerWeight
-kmyQuest.fCurrentPlayerMass = kmyQuest.fOrigPlayerMass
-
-Int idx = 0
-While idx < kmyQuest.RNDHungerEffects.Length
-	MagicEffect nthMagicEffect = Game.GetFormFromFile( kmyQuest.RNDHungerEffects[idx], "RealisticNeedsandDiseases.esp") as MagicEffect
-	Debug.Trace( "RNDWeight::GetFormFromFile = " + nthMagicEffect.GetName() + " :: " + nthMagicEffect)
-	kmyQuest.RNDHungerMagicEffects[idx] = nthMagicEffect
-	idx += 1
-EndWhile
-
-kmyQuest.RegisterForUpdateGameTime( 0.125 )
-kmyQuest.RegisterForUpdate( 5.0 )
+;BEGIN FRAGMENT Fragment_3
+Function Fragment_3()
+;BEGIN AUTOCAST TYPE RND_Weight
+Quest __temp = self as Quest
+RND_Weight kmyQuest = __temp as RND_Weight
+;END AUTOCAST
+;BEGIN CODE
+; END QUEST
+kmyQuest.endQuest( Alias_PlayerRef.GetActorReference() )
 ;END CODE
 EndFunction
 ;END FRAGMENT
