@@ -65,10 +65,12 @@ event rndSwallow(string eventName, string argString, float argNum, form sender)
 	float sleepMax        = RNDSleepMax.GetValue()
 	
 	if actorList.Find(kPlayer) >= 0 && RNDWeight.IsRunning()
-		bool isOral      = anim.HasTag("Oral") || anim.HasTag("Blowjob")
-		bool isAgressive = anim.HasTag("Aggressive") || anim.HasTag("Estrus") || anim.HasTag("Creature")
+		bool  isOral      = anim.HasTag("Oral") || anim.HasTag("Blowjob")
+		bool  isAgressive = anim.HasTag("Aggressive") || anim.HasTag("Estrus") || anim.HasTag("Creature")
+		float statMod     = ( (kPlayer.GetActorValue("Health")/4) + kPlayer.GetActorValue("Stamina") ) * 10
 
-		float exhaustion = ( time / TimeScale.GetValue() ) * RNDSleepRateGain.GetValue()
+		float exhaustion = time / statMod * TimeScale.GetValue() * RNDSleepRateGain.GetValue()
+
 		if isAgressive
 			exhaustion = exhaustion * agressiveMult
 		endIf
