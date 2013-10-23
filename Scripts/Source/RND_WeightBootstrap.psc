@@ -2,7 +2,7 @@ Scriptname RND_WeightBootstrap extends questVersioning
 
 SexLabFramework Property SexLab = None              Auto
 Quest           Property RNDWeight = None           Auto
-Float           Property agressiveMult = 4.0        Auto
+Float           Property agressiveMult = 1.1        Auto
 GlobalVariable  Property TimeScale = None           Auto 
 
 GlobalVariable  Property RNDstatus = None           Auto Hidden 
@@ -13,10 +13,12 @@ GlobalVariable  Property RNDSleepRateGain = None    Auto Hidden
 GlobalVariable  Property RNDSleepMax = None         Auto Hidden 
 Bool            Property bRegisterForUpdate = False Auto Hidden 
 
+String          Property RNDMOD = "RealisticNeedsandDiseases.esp" AutoReadOnly
+
 Actor kPlayer    = none
 
 int Function qvGetVersion()
-	return 2
+	return 3
 endFunction
 
 function qvUpdate( int aiCurrentVersion )
@@ -26,10 +28,21 @@ function qvUpdate( int aiCurrentVersion )
 		agressiveMult = 4.0
 		TimeScale = Game.GetFormFromFile(0x0000003a, "Skyrim.esm") as GlobalVariable
 	endIf
+	if (qvCurrentVersion >= 3 && aiCurrentVersion < 3)
+		agressiveMult = 1.1
+	endIf
 endFunction
 
 function baseInit()
-	RNDstatus = Game.GetFormFromFile(0x00012c4c, "RealisticNeedsandDiseases.esp") as GlobalVariable
+	RNDstatus = None
+	int idx   = Game.GetModCount()
+	while idx && RNDstatus == None
+		idx -= 1
+		if Game.GetModName(idx) == RNDMOD
+			RNDstatus = Game.GetFormFromFile(0x00012c4c, RNDMOD) as GlobalVariable
+		endIf
+	endWhile
+
 	kPlayer   = Game.GetPlayer()
 	
 	if !bRegisterForUpdate && RNDstatus != None
@@ -48,11 +61,11 @@ function baseInit()
 	endIf
 
 	if bRegisterForUpdate && SexLab.Enabled
-		RNDThirstPoints  = Game.GetFormFromFile(0x00002e07, "RealisticNeedsandDiseases.esp") as GlobalVariable
-		RNDHungerPoints  = Game.GetFormFromFile(0x00002884, "RealisticNeedsandDiseases.esp") as GlobalVariable
-		RNDSleepPoints   = Game.GetFormFromFile(0x0000bac2, "RealisticNeedsandDiseases.esp") as GlobalVariable
-		RNDSleepRateGain = Game.GetFormFromFile(0x0000bac3, "RealisticNeedsandDiseases.esp") as GlobalVariable
-		RNDSleepMax      = Game.GetFormFromFile(0x0000bac8, "RealisticNeedsandDiseases.esp") as GlobalVariable
+		RNDThirstPoints  = Game.GetFormFromFile(0x00002e07, RNDMOD) as GlobalVariable
+		RNDHungerPoints  = Game.GetFormFromFile(0x00002884, RNDMOD) as GlobalVariable
+		RNDSleepPoints   = Game.GetFormFromFile(0x0000bac2, RNDMOD) as GlobalVariable
+		RNDSleepRateGain = Game.GetFormFromFile(0x0000bac3, RNDMOD) as GlobalVariable
+		RNDSleepMax      = Game.GetFormFromFile(0x0000bac8, RNDMOD) as GlobalVariable
 
 		RegisterForModEvent("OrgasmEnd", "rndSwallow")
 	endIf
