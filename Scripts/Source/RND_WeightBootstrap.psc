@@ -18,7 +18,7 @@ String          Property RNDMOD = "RealisticNeedsandDiseases.esp" AutoReadOnly
 Actor kPlayer    = none
 
 int Function qvGetVersion()
-	return 3
+	return 4
 endFunction
 
 function qvUpdate( int aiCurrentVersion )
@@ -30,6 +30,9 @@ function qvUpdate( int aiCurrentVersion )
 	endIf
 	if (qvCurrentVersion >= 3 && aiCurrentVersion < 3)
 		agressiveMult = 1.1
+	endIf
+	if (qvCurrentVersion >= 4 && aiCurrentVersion < 4)
+		(RNDWeight as RND_Weight).SexLabActive = Game.GetFormFromFile(0x00012b24, "SexLab.esm") as Keyword
 	endIf
 endFunction
 
