@@ -12,6 +12,7 @@ MagicEffect[]       Property RNDHungerMagicEffects  Auto
 GlobalVariable      Property GameHour               Auto  
 ReferenceAlias      Property Alias_Player           Auto
 Message             Property SexLabRNDRestore       Auto  
+Keyword             Property SexLabActive           Auto  
 Int[]               Property RNDHungerEffects       Auto
 Int[]               Property iEatingHabit           Auto  Conditional
 
@@ -299,7 +300,7 @@ Event OnUpdate()
 	veryHungry    = ( kPlayer.HasMagicEffect( RNDHungerMagicEffects[4] ) || kPlayer.HasMagicEffect( RNDHungerMagicEffects[5] ) )
 	starving      = ( kPlayer.HasMagicEffect( RNDHungerMagicEffects[6] ) || kPlayer.HasMagicEffect( RNDHungerMagicEffects[7] ) )
 	overLoaded    = ( kPlayer.GetAV("InventoryWeight") > kPlayer.GetAV("CarryWeight") )
-	sexualyActive = ( SexLab.ValidateActor(kPlayer) == -10 )
+	sexualyActive = kPlayer.HasKeyword(SexLabActive)
 
 	activityPoll += 1
 	if ( kPlayer.IsInCombat() )
