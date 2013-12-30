@@ -300,7 +300,7 @@ Event OnUpdate()
 	veryHungry    = ( kPlayer.HasMagicEffect( RNDHungerMagicEffects[4] ) || kPlayer.HasMagicEffect( RNDHungerMagicEffects[5] ) )
 	starving      = ( kPlayer.HasMagicEffect( RNDHungerMagicEffects[6] ) || kPlayer.HasMagicEffect( RNDHungerMagicEffects[7] ) )
 	overLoaded    = ( kPlayer.GetAV("InventoryWeight") > kPlayer.GetAV("CarryWeight") )
-	sexualyActive = kPlayer.HasKeyword(SexLabActive)
+	sexualyActive = SexLab.IsActorActive(kPlayer)
 
 	activityPoll += 1
 	if ( kPlayer.IsInCombat() )
